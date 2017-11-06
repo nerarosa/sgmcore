@@ -351,13 +351,13 @@ function analyzePost(entry, options){
             let thumbnail = '';
             if($.inArray('thumbnail', options.fields) > -1){
                 if("media$thumbnail" in entry){
-                    thumbnail = resizeImg(entry.media$thumbnail.url, options.thumbSize);
+                    thumbnail = options.thumbResize ? resizeImg(entry.media$thumbnail.url, options.thumbSize) : entry.media$thumbnail.url;
 
                     thumbnail = options.thumbFix ? imageHostFix(thumbnail) : thumbnail;
                 }else{
                     if(content.indexOf('<img') != -1){
                         let rex = /<img.*?src="([^">]*\/([^">]*?))".*?>/g;
-                        thumbnail = resizeImg(rex.exec(content)[1], options.thumbSize);
+                        thumbnail = options.thumbResize ? resizeImg(rex.exec(content)[1], options.thumbSize) : rex.exec(content)[1];
 
                         thumbnail = options.thumbFix ? imageHostFix(thumbnail) : thumbnail;
                     }else{
@@ -399,6 +399,7 @@ function getDataFeed(options, callback){
         },
         fields : ["id","title","url","thumbnail","snippet","published","updated","label","location","titlelink","enclosure"],
         snippetlength : 150, //full or number
+        thumbResize: true,
         thumbSize: {'s':'0',"crop":"no"},
         thumbFix : true,
         render: false,
