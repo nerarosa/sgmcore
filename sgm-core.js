@@ -389,6 +389,7 @@ function analyzePost(entry, options){
 function getDataFeed(options, callback){	
     let defaults = {
         blogUrl : '',
+        label: '',
         beforeHandle: function(){},
         dataSend : {
             "alt":"json-in-script",
@@ -411,10 +412,14 @@ function getDataFeed(options, callback){
 	
     options = $.extend({}, defaults, options);
 	
-    let urlPath = '/feeds/posts/summary/';
+    let urlPath = '/feeds/posts/summary';
     
     if($.inArray('thumbnail', options.fields) > -1 || $.inArray('content', options.fields) > -1){
-        urlPath = '/feeds/posts/default/';
+        urlPath = '/feeds/posts/default';
+    }
+    
+    if(options.label != ''){
+       urlPath += '/-/' + options.label;
     }
     
 	let countLoop = 0;
