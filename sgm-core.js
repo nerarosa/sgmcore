@@ -358,7 +358,11 @@ function analyzePost(entry, options){
                     if(content.indexOf('<img') != -1){
                         let rex = /<img.*?src="([^">]*\/([^">]*?))".*?>/g;
                         thumbnail = options.thumbResize ? resizeImg(rex.exec(content)[1], options.thumbSize) : rex.exec(content)[1];
-
+                        
+                        if(options.thumbResize){                            
+                            result.rsstyle = 'object-fit: cover;height: '+ ("h" in options.thumbSize ? options.thumbSize.h : options.thumbSize.s) +'px !important;';
+                        }
+                        
                         thumbnail = options.thumbFix ? imageHostFix(thumbnail) : thumbnail;
                     }else{
                         thumbnail = DEFAULT_THUMB;
@@ -412,7 +416,9 @@ function getDataFeed(options, callback){
     };
 	
     options = $.extend({}, defaults, options);
-	
+	if(!("alt" in options.dataSend))
+        options.dataSend.alt = "json-in-script";
+    
     let urlPath = '/feeds/posts/summary';
     
     if($.inArray('thumbnail', options.fields) > -1 || $.inArray('content', options.fields) > -1){
