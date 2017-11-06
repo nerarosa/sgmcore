@@ -171,7 +171,7 @@ function resizeImg(url, size){
 			}
 			
 		}else if(!("nofix" in size)){
-			if("crop" in size && size.crop == 'c'){
+			//if("crop" in size && size.crop == 'c'){
 				let newWidth = '',
 					newHeight = '';
 				if("s" in size && size.s !== ''){
@@ -182,7 +182,7 @@ function resizeImg(url, size){
 				}	
 				
 				newImg = "https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=31536000"+ newWidth + newHeight +"&url=" + encodeURIComponent(url);
-			}/*else{
+			/*}else{
 				let newWidth = '',
 					newHeight = '';
 				if("s" in size && size.s !== ''){
