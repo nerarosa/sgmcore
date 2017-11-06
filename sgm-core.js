@@ -171,7 +171,7 @@ function resizeImg(url, size){
 			}
 			
 		}else if(!("nofix" in size)){
-			if('crop' in size && size.crop == 'no'){
+			if(size.crop == 'no'){
 				let newWidth = '',
 					newHeight = '';
 				if("s" in size && size.s !== ''){
