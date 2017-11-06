@@ -366,6 +366,10 @@ function analyzePost(entry, options){
                         thumbnail = options.thumbFix ? imageHostFix(thumbnail) : thumbnail;
                     }else{
                         thumbnail = DEFAULT_THUMB;
+                        
+                        if(options.thumbResize){                            
+                            result.rsstyle = 'height: '+ ("h" in options.thumbSize ? options.thumbSize.h : options.thumbSize.s) +'px !important;';
+                        }
                     }
                 }
 
