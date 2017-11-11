@@ -394,7 +394,118 @@ function analyzePost(entry, options){
     return result;
 }
 
-function getDataFeed(options, callback){	
+function randomPost(options, callback){
+    let defaults = {
+        blogUrl : '',
+        label: '',
+        beforeHandle: function(){},
+        dataSend : {
+            "alt":"json-in-script",
+            "max-results" : 10                        
+        },
+        fields : ["id","title","url","thumbnail","snippet","published","updated","label","location","titlelink","enclosure"],
+        snippetlength : 150, //full or number
+        thumbResize: true,
+        thumbSize: {'s':'0',"crop":"no"},
+        thumbFix : true,
+        render: false,
+        renderTemplate:{
+            el: '#sgm-render',
+            template: '#mustache-template',
+            errorText: 'Error!! Try Refresh page!'
+        },
+        dateFormat: ''
+    };
+	
+    options = $.extend({}, defaults, options);
+    
+	if(!("alt" in options.dataSend))
+        options.dataSend.alt = "json-in-script";
+    
+    let urlPath = '/feeds/posts/summary';
+    
+    if($.inArray('thumbnail', options.fields) > -1 || $.inArray('content', options.fields) > -1){
+        urlPath = '/feeds/posts/default';
+    }
+    
+    if(options.label != ''){
+       urlPath += '/-/' + options.label;
+    }
+    
+    function getTotal(callback1){        
+        getAjax({
+            url : options.blogUrl === '' ? urlPath : options.blogUrl + urlPath,
+            dataSend :{
+                "alt":"json-in-script",
+                "max-results" : 0
+            }
+        }, function(data){
+            if(data !== 'err'){
+               callback1(parseInt(data.feed.openSearch$totalResults.$t, 10));
+            }
+        })
+    }
+    
+    getTotal(function(total){
+        let randomIndex = Math.floor(Math.random() * (total - options.dataSend["max-results"])) + 1;
+        
+        options.dataSend["start-index"] = randomIndex;
+        
+        let countLoop = 0;
+        (function _init(){
+            countLoop++;
+            $.ajax({
+                url: options.blogUrl === '' ? urlPath : options.blogUrl + urlPath,
+                type: "get",
+                data: options.dataSend,
+                dataType: "jsonp",
+                beforeSend: options.beforeHandle,
+                success: function(data){
+                    let entry = data.feed.entry,
+                        result = [];
+
+                    if(entry !== undefined){
+                        for(let i = 0, len = entry.length; i < len; i++){
+                            result.push(analyzePost(entry[i], options));
+                        }
+                    }
+
+                    if(options.render){
+                        let rendered = 'No Result';
+                        if(result.length > 0){
+                            let items = {"items" : result};
+
+                            let template = $(options.renderTemplate.template).html();
+                            Mustache.parse(template);
+                            rendered = Mustache.render(template, items);
+                        }
+
+                        $(options.renderTemplate.el).html(rendered);
+                        if(isFunction(callback))
+                            callback();
+                    }else{
+                        callback(result);
+                    }
+                },
+                error: function(e){
+                    if(countLoop < 3)
+                        _init();
+                    else{
+                        console.log(e);
+                        if(options.render){
+                            $(options.renderTemplate.el).html('Error! Try refresh page.');
+                        }else{
+                            callback('err');   
+                        }   
+                    }				
+                }
+            });
+        })();
+    })
+    
+}
+
+function getDataFeed(options, callback){
     let defaults = {
         blogUrl : '',
         label: '',
