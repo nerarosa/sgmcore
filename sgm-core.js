@@ -1025,11 +1025,11 @@ function getRelatedAjax(options, callback){
 		
 		if(options.mainLabel !== '')
 			if(options.mainLabel !== val)
-                urlItem = 'https://sexygirlmedia.blogspot.com/feeds/posts/default/-/' + options.mainLabel + '/' + val;
+                urlItem = '/feeds/posts/default/-/' + options.mainLabel + '/' + val;
             else
-                urlItem = 'https://sexygirlmedia.blogspot.com/feeds/posts/default/-/' + options.mainLabel;
+                urlItem = '/feeds/posts/default/-/' + options.mainLabel;
 		else
-			urlItem = 'https://sexygirlmedia.blogspot.com/feeds/posts/default/-/' + val;
+			urlItem = '/feeds/posts/default/-/' + val;
 		
 		urls.push(urlItem); 
 	});			
