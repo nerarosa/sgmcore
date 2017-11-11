@@ -1172,7 +1172,7 @@ function getRelatedAjax(options, callback){
             callback(result);
         }
 	}).catch(function(err) {
-		console.log("Opps, broken: " + err.message);
+		console.log("Opps, broken: " + err);
         callback('err');
 	});
 }
