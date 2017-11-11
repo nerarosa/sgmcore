@@ -1136,7 +1136,7 @@ function getRelatedAjax(options, callback){
 			}).then(function(entry) {
 				if(entry !== undefined){
 					let count = 1;
-					for(let i in entry) {
+					for(let i = 0, len = entry.length; i < entry.length; i++) {
 						if(allRelatedPost.length == options.max) return allRelatedPost;
                         if(count == options.maxInLabel) break;
                         
