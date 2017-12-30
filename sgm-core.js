@@ -127,7 +127,7 @@ function isURL(str) {
 }
 
 function isResizeable(url){
-    if(url.indexOf('https:'))
+    
 }
 
 /*resize image*/
