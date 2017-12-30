@@ -115,6 +115,21 @@ function imageHostFix(url, nofix){
 	return url;
 }
 
+function isURL(str) {
+  var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name and extension
+  '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+  '(\\:\\d+)?'+ // port
+  '(\\/[-a-z\\d%@_.~+&:]*)*'+ // path
+  '(\\?[;&a-z\\d%@_.,~+&:=-]*)?'+ // query string
+  '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  return pattern.test(str);
+}
+
+function isResizeable(url){
+    if(url.indexOf('https:'))
+}
+
 /*resize image*/
 function resizeImg(url, size){
 	/*
@@ -283,6 +298,18 @@ function getAjax(options, callback){
     })();	
 }
 
+function findImg(str){
+    let rex = /<img.*?src="([^">]*\/([^">]*?))".*?>/g;
+    
+    let result = rex.exec(str)[1];
+    
+    if(result != null && result !== ''){
+        return result;  
+    }else{
+        return DEFAULT_THUMB;
+    }
+}
+
 function analyzePost(entry, options){
     let result = {};
     if(entry !== undefined){
@@ -355,9 +382,8 @@ function analyzePost(entry, options){
 
                     thumbnail = options.thumbFix ? imageHostFix(thumbnail) : thumbnail;
                 }else{
-                    if(content.indexOf('<img') != -1){
-                        let rex = /<img.*?src="([^">]*\/([^">]*?))".*?>/g;
-                        thumbnail = options.thumbResize ? resizeImg(rex.exec(content)[1], options.thumbSize) : rex.exec(content)[1];
+                    if(content.indexOf('<img') != -1){                        
+                        thumbnail = options.thumbResize ? resizeImg(findImg(content), options.thumbSize) : findImg(content);
                         
                         if(options.thumbResize){                            
                             result.rsstyle = 'object-fit: cover;height: '+ ("h" in options.thumbSize ? options.thumbSize.h : options.thumbSize.s) +'px !important;';
@@ -542,6 +568,15 @@ function getDataFeed(options, callback){
     
     if(options.label != ''){
        urlPath += '/-/' + options.label;
+    }
+    
+    if("publishedMax" in options.dataSend){
+        urlPath += "?published-max=" + options.dataSend.publishedMax.replace('+', '%2B');
+        delete options.dataSend.publishedMax;
+    }
+    if("publishedMin" in options.dataSend){
+        urlPath += "?published-max=" + options.dataSend.publishedMin.replace('+', '%2B');
+        delete options.dataSend.publishedMin;
     }
     
 	let countLoop = 0;
