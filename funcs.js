@@ -25,6 +25,42 @@ function isEmail(email) {
     return /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(email);
 }
 
+function isNumber(input) {
+    return typeof input === 'number' || Object.prototype.toString.call(input) === '[object Number]';
+}
+
+function isFunction(input) {
+    return input instanceof Function || Object.prototype.toString.call(input) === '[object Function]';
+}
+
+function isArray(input) {
+    return input instanceof Array || Object.prototype.toString.call(input) === '[object Array]';
+}
+
+function isObject(input) {
+    // IE8 will treat undefined and null as object if it wasn't for
+    // input != null
+    return input !== null && Object.prototype.toString.call(input) === '[object Object]';
+}
+
+function isObjectEmpty(obj) {
+    if (Object.getOwnPropertyNames) {
+        return (Object.getOwnPropertyNames(obj).length === 0);
+    } else {
+        var k;
+        for (k in obj) {
+            if (obj.hasOwnProperty(k)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+function isUndefined(input) {
+    return input === void 0;
+}
+
 /*
 * Check is interger
 */
@@ -71,6 +107,14 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function rand(min, max, integer, maxInc) {
+    let r = Math.random() * (max - min) + min;
+    if(maxInc){
+        r = Math.random() * (max - min + 1) + min;
+    }
+    return integer ? r|0 : r;
+}
+
 /*
 * Remove all html tags
 */
@@ -115,12 +159,3 @@ function cutString(str, num, char, more){
     
     return result;
 }
-
-
-
-
-
-
-
-
-
